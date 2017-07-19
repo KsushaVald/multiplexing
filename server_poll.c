@@ -15,7 +15,7 @@ int main(){
 	struct sockaddr_in my_addr_tcp, my_addr_udp, client_udp, client_tcp;
 	socklen_t len_t=sizeof(struct sockaddr);
 	socklen_t len_u=sizeof(struct sockaddr);
-	struct pollfd  p[2]; char time[256];
+	struct pollfd  p[2]; char time[256]; char buf[256];
 	struct  tm *m_time; long int s_time;
 
 	my_addr_tcp.sin_family=AF_INET;
@@ -41,7 +41,7 @@ int main(){
 	p[0].events=POLLIN;
 	p[1].events=POLLIN;
 	while(1){
-		test=poll(p,1,2000);
+		test=poll(p,2,5000);
 		if(test==-1){
 			perror("poll");
 			exit(-1);
@@ -56,7 +56,7 @@ int main(){
 					send(fd_client,time,sizeof(time),0);
 				}
 				if(p[1].revents&POLLIN){
-					recvfrom(fd_socket_udp,&time,sizeof(time),0,(struct sockaddr*)&client_udp,&len_u);
+					recvfrom(fd_socket_udp,&buf,sizeof(time),0,(struct sockaddr*)&client_udp,&len_u);
 					sendto(fd_socket_udp,time,sizeof(time), 0,(struct sockaddr*)&client_udp,len_u);
 				}
 			}
